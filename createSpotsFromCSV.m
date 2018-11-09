@@ -5,14 +5,14 @@
 %    <CustomTools>
 %      <Menu>
 %       <Submenu name="Spots Functions">
-%        <Item name="Create Channel From CSV" icon="Matlab">
+%        <Item name="Create Spots from CSV" icon="Matlab">
 %          <Command>MatlabXT::createSpotsFromCSV(%i)</Command>
 %        </Item>
 %       </Submenu>
 %      </Menu>
 %      <SurpassTab>
 %        <SurpassComponent name="bpSpots">
-%          <Item name="Create Channel From CSV" icon="Matlab">
+%          <Item name="Create Spots from CSV" icon="Matlab">
 %            <Command>MatlabXT::createSpotsFromCSV(%i)</Command>
 %          </Item>
 %        </SurpassComponent>
@@ -48,11 +48,10 @@ vSpots=vImarisApplication.GetFactory.CreateSpots;
 [filename, pathname] = uigetfile('*.csv','Select the input csv file containing the xyz-positions');
 infile = strcat(pathname, filename);
 % assign position variables from csv file
-Nrows = numel(textread('mydata.txt','%1c%*[^\n]'))
-dataset = csvread(infile,4,0);
+dataset = csvread(infile);
 data_dim = size(dataset);
 datalen = data_dim(1);
-xpos_data = dataset(:,1)
+xpos_data = dataset(:,1);
 ypos_data = dataset(:,2);
 zpos_data = dataset(:,3);
 
@@ -70,23 +69,19 @@ dlg_title = 'Spot Radius';
 num_lines = 1;
 defaultans = {'2'};
 answer = inputdlg(prompt,dlg_title,num_lines,defaultans);
-
 spotrad=str2double(answer);
 
-% assign sphere radius of 1.5 as default
-%vSpotsRadius=1.5*ones(datalen,1);
+% assign sphere radius according to dialog box
 vSpotsRadius=spotrad*ones(datalen,1);
+
 % assign the spots object its positions, time indices and size
 vSpots.Set(vSpotsXYZ,aIndicesT,vSpotsRadius);
 
 % Give the component a nice name
-vSpotsComponent.SetName('Spots from XTCreateSpotsFromFile');
+vSpots.SetName('Spots from XT Create Spots from CSV');
   
-% Set red color
-vSpotsComponent.SetColorRGBA(255);
-
 % Add the spots component at the end of the surpass tree
-vScene.AddChild(vSpotsComponent, -1);  
+vSurpassScene.AddChild(vSpots, -1);  
 
 
 
